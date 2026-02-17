@@ -163,4 +163,4 @@ cython_debug/
 .idea/
 # Ignore MacOS specific files
 .DS_Store
-.coverage
+.coverage.env
