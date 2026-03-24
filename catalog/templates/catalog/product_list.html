@@ -1,10 +1,9 @@
 {% extends 'catalog/base.html' %}
 
-
 {% block content %}
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-4">SkyStore</h1>
-    <p class="lead">SkyStore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
+    <h1 class="display-4">Skystore</h1>
+    <p class="lead">Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
         продать</p>
 </div>
 
@@ -17,19 +16,10 @@
                     <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
                 </div>
                 <div class="card-body">
-                    {% if product.image %}
-                    <img src="{{ product.image.url }}" class="img-fluid mb-3" alt="{{ product.name }}"
-                         style="max-height: 150px;">
-                    {% else %}
-                    <div class="bg-secondary text-white p-3 mb-3 rounded">Нет изображения</div>
-                    {% endif %}
-
                     <h1 class="card-title pricing-card-title">$ {{ product.price }}</h1>
-
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                         <li>- {{ product.description|truncatechars:100 }}</li>
                     </ul>
-
                     <a href="{% url 'catalog:product_detail' product.id %}"
                        class="btn btn-lg btn-block btn-outline-primary">
                         Подробнее
@@ -39,9 +29,7 @@
         </div>
         {% empty %}
         <div class="col-12">
-            <div class="alert alert-info">
-                <p class="mb-0">В магазине пока нет товаров. Загляните позже!</p>
-            </div>
+            <p>Нет доступных продуктов</p>
         </div>
         {% endfor %}
     </div>

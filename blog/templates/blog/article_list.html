@@ -1,0 +1,65 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">SkyStore</h1>
+    <p class="lead">SkyStore - статьи о разном</p>
+</div>
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12 text-end">
+            <a href="{% url 'blog:article_create' %}" class="btn btn-primary btn-lg">
+                + Создать статью
+            </a>
+        </div>
+    </div>
+
+    <div class="row text-center">
+        {% for article in articles %}
+        <div class="col-3">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{ article.title }}</h4>
+                </div>
+                <div class="card-body">
+                    {% if article.preview %}
+                    <img src="{{ article.preview.url }}" class="img-fluid mb-3" alt="{{ article.title }}"
+                         style="max-height: 150px;">
+                    {% else %}
+                    <div class="bg-secondary text-white p-3 mb-3 rounded">Нет изображения</div>
+                    {% endif %}
+                    <p class="card-text">
+                        <strong>Статус:</strong>
+                        {% if article.is_published %}
+                            <span class="text-success">✓ Опубликовано</span>
+                        {% else %}
+                            <span class="text-warning">📝 Черновик</span>
+                        {% endif %}
+                    </p>
+
+                    <p class="card-text">
+                        <strong>Просмотры:</strong> {{ article.views_count }}
+                    </p>
+
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                        <li>- {{ article.text|truncatechars:100 }}</li>
+                    </ul>
+
+                    <a href="{% url 'blog:article_detail' article.id %}"
+                       class="btn btn-lg btn-block btn-outline-primary">
+                        Подробнее
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <p class="mb-0">Нет статей. Загляните позже!</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
