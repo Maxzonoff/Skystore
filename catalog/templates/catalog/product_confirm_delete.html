@@ -4,6 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-6">
+            {% if user.is_authenticated %}
             <form class="row" method="post" enctype="multipart/form-data">
                 <div class="card">
                   <p class="card-text">Реально удалить? {{ object.name }}</p>
@@ -14,6 +15,7 @@
                   <a class="btn btn-primary" href="{% url 'catalog:product_list' %}" role="button">Передумать</a>
                 </div>
             </form>
+            {% endif %}
         </div>
     </div>
 </div>
