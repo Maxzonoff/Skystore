@@ -3,9 +3,8 @@
 
 {% block content %}
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-4">SkyStore</h1>
-    <p class="lead">SkyStore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
-        продать</p>
+    <h2 class="display-7">MyStore</h2>
+    <p class="lead">MyStore - это отличный вариант продать вам что-то ненужное!</p>
 </div>
 
 <div class="container">
@@ -24,10 +23,10 @@
                     <div class="bg-secondary text-white p-3 mb-3 rounded">Нет изображения</div>
                     {% endif %}
 
-                    <h1 class="card-title pricing-card-title">$ {{ product.price }}</h1>
+                    <h4 class="card-title pricing-card-title">Цена: {{ product.price }} руб.</h4>
 
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- {{ product.description|truncatechars:100 }}</li>
+                        <li>- {{ product.description|truncatechars:50 }}</li>
                     </ul>
 
                     <a href="{% url 'catalog:product_detail' product.id %}"
@@ -40,7 +39,7 @@
         {% empty %}
         <div class="col-12">
             <div class="alert alert-info">
-                <p class="mb-0">В магазине пока нет товаров. Загляните позже!</p>
+                <p class="mb-0">В магазине пока нет товаров. Всё закончилось!</p>
             </div>
         </div>
         {% endfor %}
