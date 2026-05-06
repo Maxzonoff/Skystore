@@ -20,9 +20,9 @@
             <p class="lead text-muted">
                 Статус:
                 {% if article.is_published %}
-                    <span class="text-success">✓ Опубликовано</span>
+                <span class="text-success">✓ Опубликовано</span>
                 {% else %}
-                    <span class="text-warning">📝 Черновик</span>
+                <span class="text-warning">📝 Черновик</span>
                 {% endif %}
             </p>
             <p class="text-muted">
@@ -49,12 +49,32 @@
                     <a href="{% url 'blog:article_list' %}" class="btn btn-secondary btn-sm">
                         ← Назад к списку
                     </a>
-                    <a href="{% url 'blog:article_update' article.pk %}" class="btn btn-warning btn-sm">
-                        ✏️ Редактировать
-                    </a>
-                    <a href="{% url 'blog:article_delete' article.pk %}" class="btn btn-danger btn-sm">
-                        🗑️ Удалить
-                    </a>
+
+                    <!-- Кнопка публикации/снятия с публикации (только для контент-менеджера) -->
+                    {% if perms.blog.can_publish_article %}
+                    {% if article.is_published %}
+                    <form method="post" action="{% url 'blog:article_unpublish' article.pk %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning btn-sm">📌 Снять с публикации</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{% url 'blog:article_publish' article.pk %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm">✅ Опубликовать</button>
+                    </form>
+                    {% endif %}
+                    {% endif %}
+
+                    <!-- Кнопка редактирования (только для контент-менеджера) -->
+                    {% if perms.blog.change_article %}
+                    <a href="{% url 'blog:article_update' article.pk %}" class="btn btn-warning btn-sm">✏️
+                        Редактировать</a>
+                    {% endif %}
+
+                    <!-- Кнопка удаления (только для контент-менеджера) -->
+                    {% if perms.blog.delete_article %}
+                    <a href="{% url 'blog:article_delete' article.pk %}" class="btn btn-danger btn-sm">🗑️ Удалить</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -62,19 +82,19 @@
 </div>
 
 <style>
-.preview-container {
-    overflow: hidden;
-    border-radius: 0.375rem;
-}
+    .preview-container {
+        overflow: hidden;
+        border-radius: 0.375rem;
+    }
 
-.preview-image {
-    transition: transform 0.3s ease;
-    width: 100%;
-    height: auto;
-}
+    .preview-image {
+        transition: transform 0.3s ease;
+        width: 100%;
+        height: auto;
+    }
 
-.preview-image:hover {
-    transform: scale(1.1);
-}
+    .preview-image:hover {
+        transform: scale(1.1);
+    }
 </style>
 {% endblock %}
