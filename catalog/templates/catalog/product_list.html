@@ -19,6 +19,16 @@
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                         <li>- {{ product.description|truncatechars:50 }}</li>
                     </ul>
+                    {% if perms.catalog.can_unpublish_product %}
+                    <p class="card-text">
+                        <strong>Статус:</strong>
+                        {% if product.is_published %}
+                            <span class="badge bg-success">Опубликован</span>
+                        {% else %}
+                            <span class="badge bg-warning">Снят с публикации</span>
+                        {% endif %}
+                    </p>
+                {% endif %}
                     <a href="{% url 'catalog:product_detail' product.id %}"
                        class="btn btn-lg btn-block btn-outline-primary">
                         Подробнее
