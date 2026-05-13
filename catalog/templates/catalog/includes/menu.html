@@ -1,17 +1,23 @@
 <nav class="ms-5">
     <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:home' %}">Главная</a>
     <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_list' %}">Каталог</a>
+    <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:category_list' %}">Категории</a>
     <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:contacts' %}">Контакты</a>
     <a class="p-2 btn btn-outline-primary" href="{% url 'blog:article_list' %}">Статьи</a>
 
     {% if user.is_authenticated %}
-    <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
-        {% csrf_token %}
-        <button type="submit" class="p-2 btn btn-outline-primary">Выход</button>
-    </form>
+        <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="p-2 btn btn-outline-danger">Выход</button>
+        </form>
+        <span class="p-2 text-success">
+            ✅ {{ user.email }}
+        </span>
     {% else %}
-    <a class="p-2 btn btn-outline-primary" href="{% url 'users:login' %}">Вход</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:login' %}">Вход</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:register' %}">Регистрация</a>
+        <span class="p-2 text-muted">
+            ❌ Не авторизован
+        </span>
     {% endif %}
-    <a class="p-2 btn btn-outline-primary" href="{% url 'users:register' %}">Регистрация</a>
 </nav>
-
