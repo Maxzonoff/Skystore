@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, HttpResponseForbidden, Http404
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -14,8 +14,12 @@ from django.views.generic import (
 )
 
 from catalog.forms import ProductForm
-from catalog.models import Contacts, Product
+from catalog.models import Contacts, Product, Category
 from django.contrib import messages
+
+from config import settings
+from .services import get_products_list_from_cache
+from django.core.cache import cache
 
 
 class UnpublishProductView(LoginRequiredMixin, View):
@@ -67,7 +71,15 @@ class ProductListView(ListView):
     def get_queryset(self):
         if self.request.user.has_perm('catalog.can_unpublish_product'):
             return Product.objects.all().order_by('-created_at')
-        return Product.objects.filter(is_published=True).order_by('-created_at')
+
+        if not settings.CACHE_ENABLED:
+            return Product.objects.filter(is_published=True).order_by('-created_at')
+
+        queryset = cache.get('published_products')
+        if not queryset:
+            queryset = Product.objects.filter(is_published=True).order_by('-created_at')
+            cache.set('published_products', queryset, 60 * 5)
+        return queryset
 
 
 class ProductDetailView(DetailView):
@@ -141,6 +153,33 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         """Если нет прав"""
         messages.error(self.request, 'У вас нет прав для удаления этого продукта')
         return redirect('catalog:product_list')
+
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = "catalog/category_list.html"
+    context_object_name = "categories"
+
+
+class CategoryProductsView(ListView):
+    """Отображает товары выбранной категории с кэшированием"""
+    model = Product
+    template_name = "catalog/category_products.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        category_id = self.kwargs.get('category_id')
+        products = get_products_list_from_cache(category_id)
+
+        if not self.request.user.has_perm('catalog.can_unpublish_product'):
+            products = products.filter(is_published=True)
+        return products.order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs.get('category_id')
+        context['category'] = get_object_or_404(Category, id=category_id)
+        return context
 
 
 class ContactsListView(ListView):
